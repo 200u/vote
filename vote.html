@@ -7,267 +7,606 @@
 <style>
 :root{
   --bg:#101113;
-  --panel:#191c20;
-  --panel2:#20242a;
-  --text:#f7f4ee;
-  --muted:#b9b4aa;
-  --line:rgba(255,255,255,.14);
+  --panel:#1a1d21;
+  --panel2:#22262b;
+  --text:#f7f2ea;
+  --muted:#b9b1a5;
+  --line:rgba(255,255,255,.15);
   --gold:#d8c48b;
   --red:#b2293d;
-  --red2:#d84d62;
-  --ok:#62d49d;
-  --danger:#e16b7a;
-  --serif:"Yu Mincho","Hiragino Mincho ProN","Times New Roman",serif;
-  --sans:"Yu Gothic",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --red2:#d84b5c;
+  --ok:#72d69b;
+  --danger:#e36b7a;
+  --shadow:0 18px 45px rgba(0,0,0,.35);
+  --sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --serif:"Hiragino Mincho ProN","Yu Mincho",serif;
 }
+
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:radial-gradient(circle at 50% -10%,rgba(216,196,139,.14),transparent 36%),linear-gradient(145deg,#24272b,#111315 56%,#070809);color:var(--text);font-family:var(--sans);-webkit-tap-highlight-color:transparent}
-button{font:inherit;color:inherit}
-.page{min-height:100vh;padding:18px clamp(14px,3vw,34px) 64px;display:flex;flex-direction:column;gap:15px}
-.header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
-.brand{text-align:center;letter-spacing:.08em;font-family:var(--serif)}
-.brand .sub{font-size:13px;color:var(--gold);font-style:italic}
-.brand .main{font-size:clamp(30px,5vw,48px);line-height:1.1}
-.total{justify-self:end;border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:999px;padding:9px 14px;color:var(--muted);font-size:13px;white-space:nowrap}
-.left-actions{justify-self:start;display:flex;gap:8px;flex-wrap:wrap}
-.small-btn{border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:999px;padding:9px 13px;font-size:12px;color:rgba(247,244,238,.72);cursor:pointer}
-.message{min-height:22px;text-align:center;color:#ffd0d6;font-weight:700}
-.grid{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-content:center}
-.card{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.045));box-shadow:0 18px 44px rgba(0,0,0,.24);min-height:210px;padding:0;overflow:hidden;cursor:pointer;text-align:left;display:flex;flex-direction:column;justify-content:space-between}
-.card:active{transform:scale(.99)}
-.card-top{padding:20px 18px 12px;min-height:128px;display:flex;flex-direction:column;justify-content:center;gap:12px}
-.num{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:18px;letter-spacing:.06em}
-.name{font-family:var(--serif);font-size:clamp(28px,3vw,40px);letter-spacing:.1em;line-height:1.12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vote-count{border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.16);padding:14px 18px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-.vote-count .label{color:var(--muted);font-size:13px;letter-spacing:.04em}
-.vote-count .count{color:var(--gold);font-family:var(--serif);font-size:28px;line-height:1}
-.vote-count .unit{color:var(--gold);font-size:14px;margin-left:2px}
-.footer{position:fixed;left:0;right:0;bottom:0;background:rgba(0,0,0,.62);backdrop-filter:blur(10px);display:flex;justify-content:center;gap:14px;align-items:center;color:rgba(255,255,255,.62);font-size:12px;padding:8px 12px;z-index:5;letter-spacing:.04em}
-.modal,.thanks{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);padding:20px;z-index:20}
-.modal.show,.thanks.show{display:flex}
-.dialog{width:min(520px,100%);border:1px solid var(--line);border-radius:18px;background:#171b1f;padding:24px;text-align:center;box-shadow:0 28px 80px rgba(0,0,0,.52)}
-.modal-num{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:18px;margin-bottom:5px}
-.modal-name{font-family:var(--serif);font-size:42px;letter-spacing:.1em;margin:0 0 14px}
-.dialog p{color:var(--muted);margin:0 0 18px;line-height:1.7}
-.actions{display:flex;gap:10px}
-.actions button,.next{border:1px solid var(--line);border-radius:999px;padding:15px 16px;background:rgba(255,255,255,.08);cursor:pointer}
-.back{flex:1}.vote{flex:2;background:linear-gradient(135deg,#8c2030,#c34658)!important}.vote:disabled{opacity:.5;cursor:not-allowed}
-.thanks .mark{font-size:52px;color:var(--ok);line-height:1}.thanks h2{font-family:var(--serif);font-weight:400;font-size:34px;margin:8px 0 8px}.thanks p{color:var(--muted);margin-bottom:18px}
-.summary{display:none;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.22);padding:14px 16px;margin-top:2px}
-.summary.show{display:block}
-.summary-title{font-family:var(--serif);font-size:22px;color:var(--gold);margin-bottom:10px;letter-spacing:.06em}
-.summary-row{display:grid;grid-template-columns:52px 1fr auto;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,.08);align-items:center}.summary-row:first-of-type{border-top:0}.summary-row .rank{color:var(--muted)}.summary-row .sname{font-size:16px}.summary-row .scount{font-family:var(--serif);font-size:22px;color:var(--gold)}
-@media(max-width:980px){.header{grid-template-columns:1fr}.left-actions,.total{justify-self:center}.grid{grid-template-columns:repeat(2,minmax(0,1fr));align-content:start}.card{min-height:185px}.card-top{min-height:110px}}
-@media(max-width:520px){.page{padding:12px 10px 70px}.grid{gap:10px}.card{min-height:160px;border-radius:13px}.card-top{padding:16px 13px 10px;min-height:96px}.num{font-size:15px}.name{font-size:25px}.vote-count{padding:12px 13px}.vote-count .count{font-size:24px}.footer{font-size:11px;gap:8px;flex-wrap:wrap}.brand .main{font-size:31px}.modal-name{font-size:36px}}
+html,body{
+  margin:0;
+  min-height:100%;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(216,196,139,.16),transparent 32%),
+    radial-gradient(circle at 0% 100%,rgba(178,41,61,.18),transparent 36%),
+    linear-gradient(145deg,#24272b,#111315 55%,#070809);
+  color:var(--text);
+  font-family:var(--sans);
+  -webkit-tap-highlight-color:transparent;
+}
+button,input{font:inherit}
+button{color:inherit}
+
+.app{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  padding:18px clamp(14px,3vw,34px) 70px;
+  gap:14px;
+}
+
+.header{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:12px;
+}
+
+.brand{
+  text-align:center;
+  font-family:var(--serif);
+  letter-spacing:.08em;
+}
+
+.brand .sub{
+  color:var(--gold);
+  font-size:13px;
+  font-style:italic;
+}
+
+.brand .title{
+  font-size:clamp(30px,5vw,50px);
+  line-height:1.15;
+}
+
+.topStat{
+  justify-self:end;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.07);
+  border-radius:999px;
+  padding:10px 14px;
+  color:var(--muted);
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.status{
+  justify-self:start;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.07);
+  border-radius:999px;
+  padding:10px 14px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--ok);
+  box-shadow:0 0 12px var(--ok);
+}
+
+.notice{
+  text-align:center;
+  color:#ffd0d6;
+  min-height:24px;
+  font-weight:700;
+}
+
+.grid{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  align-content:start;
+}
+
+.card{
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.045));
+  border-radius:18px;
+  min-height:210px;
+  padding:0;
+  cursor:pointer;
+  overflow:hidden;
+  text-align:left;
+  box-shadow:var(--shadow);
+  transition:transform .12s ease,border-color .12s ease,background .12s ease;
+}
+
+.card:active{
+  transform:scale(.985);
+  border-color:rgba(216,196,139,.55);
+}
+
+.cardHead{
+  padding:18px 17px 14px;
+  min-height:126px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:
+    linear-gradient(135deg,rgba(216,196,139,.10),transparent 45%),
+    linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.05));
+}
+
+.num{
+  font-family:var(--serif);
+  color:var(--gold);
+  font-size:15px;
+  font-style:italic;
+}
+
+.name{
+  margin-top:10px;
+  font-family:var(--serif);
+  font-size:clamp(28px,3vw,40px);
+  letter-spacing:.08em;
+  line-height:1.15;
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+}
+
+.voteCount{
+  border-top:1px solid rgba(255,255,255,.11);
+  padding:16px 17px;
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:10px;
+}
+
+.voteCount .label{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.voteCount .count{
+  color:var(--gold);
+  font-size:26px;
+  font-family:var(--serif);
+}
+
+.controls{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.controlBtn{
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:rgba(255,255,255,.07);
+  color:var(--text);
+  padding:11px 16px;
+  cursor:pointer;
+}
+
+.controlBtn.primary{
+  background:linear-gradient(135deg,#8c2030,#c34658);
+  border-color:rgba(255,255,255,.18);
+}
+
+.controlBtn.danger{
+  color:#ffd0d6;
+  border-color:rgba(227,107,122,.45);
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,.66);
+  backdrop-filter:blur(12px);
+  z-index:10;
+}
+
+.modal.show{display:flex}
+
+.dialog{
+  width:min(520px,100%);
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:linear-gradient(180deg,#1b1f23,#121416);
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
+  padding:24px;
+  text-align:center;
+}
+
+.dialog .small{
+  color:var(--gold);
+  font-family:var(--serif);
+  font-style:italic;
+}
+
+.dialog .big{
+  margin:8px 0 10px;
+  font-family:var(--serif);
+  font-size:42px;
+  letter-spacing:.08em;
+}
+
+.dialog p{
+  color:var(--muted);
+  line-height:1.7;
+  margin:0 0 20px;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+}
+
+.actions button{
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:15px 16px;
+  background:rgba(255,255,255,.08);
+  cursor:pointer;
+}
+
+.actions .submit{
+  flex:2;
+  background:linear-gradient(135deg,#8c2030,#c34658);
+}
+
+.actions .back{
+  flex:1;
+}
+
+.resultPanel{
+  display:none;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,.07);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.resultPanel.show{display:block}
+
+.resultHeader{
+  padding:15px 18px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  border-bottom:1px solid rgba(255,255,255,.11);
+}
+
+.resultHeader h2{
+  font-family:var(--serif);
+  font-size:24px;
+  font-weight:400;
+  margin:0;
+}
+
+.resultList{
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.resultList li{
+  display:grid;
+  grid-template-columns:60px 1fr auto;
+  gap:12px;
+  align-items:center;
+  padding:13px 18px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.resultList li:last-child{border-bottom:none}
+
+.rank{
+  color:var(--gold);
+  font-family:var(--serif);
+}
+
+.resultName{
+  font-size:17px;
+}
+
+.resultVotes{
+  font-family:var(--serif);
+  color:var(--gold);
+  font-size:22px;
+}
+
+.footer{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  padding:8px 12px;
+  text-align:center;
+  color:rgba(255,255,255,.52);
+  background:rgba(0,0,0,.58);
+  backdrop-filter:blur(10px);
+  font-size:12px;
+  z-index:5;
+}
+
+@media(max-width:900px){
+  .header{grid-template-columns:1fr}
+  .status,.topStat{justify-self:center}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:520px){
+  .app{padding:12px 10px 64px}
+  .grid{gap:10px}
+  .card{min-height:180px;border-radius:15px}
+  .cardHead{padding:15px 13px 12px;min-height:110px}
+  .name{font-size:27px}
+  .voteCount{padding:13px}
+  .voteCount .count{font-size:23px}
+  .actions{flex-direction:column-reverse}
+  .resultList li{grid-template-columns:48px 1fr auto;padding:12px 13px}
+}
 </style>
 </head>
 <body>
-<div class="page">
+<div class="app">
   <header class="header">
-    <div class="left-actions">
-      <button class="small-btn" type="button" onclick="toggleSummary()">集計表示</button>
-      <button class="small-btn" type="button" onclick="resetVotes()">リセット</button>
-    </div>
+    <div class="status"><span class="dot"></span><span>投票受付中</span></div>
     <div class="brand">
       <div class="sub">MISS MITOICHI 2026</div>
-      <div class="main">投票フォーム</div>
+      <div class="title">投票フォーム</div>
     </div>
-    <div class="total" id="totalVotes">この端末：0票</div>
+    <div class="topStat" id="totalVotes">この端末：0票</div>
   </header>
 
-  <div class="message" id="message"></div>
-  <section class="summary" id="summary"></section>
-  <main class="grid" id="grid"></main>
+  <div class="notice" id="notice"></div>
+
+  <main class="grid" id="candidateGrid"></main>
+
+  <section class="resultPanel" id="resultPanel">
+    <div class="resultHeader">
+      <h2>この端末の集計</h2>
+      <button class="controlBtn" type="button" onclick="toggleResults(false)">閉じる</button>
+    </div>
+    <ol class="resultList" id="resultList"></ol>
+  </section>
+
+  <div class="controls">
+    <button class="controlBtn primary" type="button" onclick="toggleResults(true)">集計表示</button>
+    <button class="controlBtn danger" type="button" onclick="resetVotes()">この端末の票をリセット</button>
+  </div>
 </div>
 
-<div class="modal" id="modal" role="dialog" aria-modal="true">
+<div class="modal" id="confirmModal" role="dialog" aria-modal="true">
   <div class="dialog">
-    <div class="modal-num" id="modalNum"></div>
-    <div class="modal-name" id="modalName"></div>
+    <div class="small" id="modalNumber"></div>
+    <div class="big" id="modalName"></div>
     <p>この候補者に投票します。よろしいですか？</p>
     <div class="actions">
       <button class="back" type="button" onclick="closeModal()">戻る</button>
-      <button class="vote" id="voteSubmitButton" type="button" onclick="submitVote()">投票する</button>
+      <button class="submit" type="button" onclick="submitVote()">投票する</button>
     </div>
   </div>
 </div>
 
-<div class="thanks" id="thanks">
+<div class="modal" id="thanksModal" role="dialog" aria-modal="true">
   <div class="dialog">
-    <div class="mark">✓</div>
-    <h2>投票しました</h2>
-    <p id="thanksName"></p>
-    <button class="next" type="button" onclick="readyNext()">次の投票へ</button>
+    <div class="small">投票完了</div>
+    <div class="big">✓</div>
+    <p id="thanksText">投票しました。</p>
+    <div class="actions">
+      <button class="submit" type="button" onclick="closeThanks()">次の投票へ</button>
+    </div>
   </div>
 </div>
 
-<div class="footer">
-  <span>写真なし・端末内保存版</span>
-  <span id="deviceInfo">localStorage保存</span>
-  <span>v20260620-standalone</span>
-</div>
+<div class="footer" id="footerText">データはこのiPad内にのみ保存されます</div>
 
 <script>
-const CANDIDATES = [
-  { id: 'akane', number: 1, name: 'あかね' },
-  { id: 'hamamero', number: 2, name: 'はまめろ' },
-  { id: 'reina', number: 3, name: 'れいな' },
-  { id: 'sorara', number: 4, name: 'そらら' },
-  { id: 'yusepi', number: 5, name: 'ゆせぴ' },
-  { id: 'ruta', number: 6, name: 'るた' },
-  { id: 'hina', number: 7, name: 'ひな' }
-];
+(function(){
+  "use strict";
 
-const STORAGE_KEY = 'm26_miss_mitoichi_2026_local_votes_standalone_v1';
-let selectedCandidate = null;
-let summaryVisible = false;
+  const CANDIDATES = [
+    { id:"akane", number:1, name:"あかね" },
+    { id:"hamamero", number:2, name:"はまめろ" },
+    { id:"reina", number:3, name:"れいな" },
+    { id:"sorara", number:4, name:"そらら" },
+    { id:"yusepi", number:5, name:"ゆせぴ" },
+    { id:"ruta", number:6, name:"るた" },
+    { id:"hina", number:7, name:"ひな" }
+  ];
 
-function esc(value) {
-  return String(value).replace(/[&<>'"]/g, ch => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-  }[ch]));
-}
+  const STORAGE_KEY = "m26_miss_mitoichi_2026_local_votes_standalone_v1";
+  let selectedCandidateId = null;
 
-function setMessage(text) {
-  document.getElementById('message').textContent = text || '';
-}
-
-function loadVotes() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!parsed || typeof parsed !== 'object') return {};
-    return parsed;
-  } catch (e) {
-    return {};
+  function $(id){
+    return document.getElementById(id);
   }
-}
 
-function saveVotes(votes) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(votes));
-}
-
-function getCount(candidateId) {
-  const votes = loadVotes();
-  return Number(votes[candidateId] || 0);
-}
-
-function getTotal(votes) {
-  return CANDIDATES.reduce((sum, candidate) => sum + Number(votes[candidate.id] || 0), 0);
-}
-
-function addVote(candidateId) {
-  const votes = loadVotes();
-  votes[candidateId] = Number(votes[candidateId] || 0) + 1;
-  saveVotes(votes);
-}
-
-function renderSummary(votes) {
-  const rows = CANDIDATES
-    .map(candidate => ({ ...candidate, count: Number(votes[candidate.id] || 0) }))
-    .sort((a, b) => b.count - a.count || a.number - b.number);
-
-  document.getElementById('summary').innerHTML =
-    '<div class="summary-title">この端末の集計</div>' +
-    rows.map((candidate, index) =>
-      '<div class="summary-row">' +
-        '<div class="rank">' + (index + 1) + '位</div>' +
-        '<div class="sname">No.' + candidate.number + '　' + esc(candidate.name) + '</div>' +
-        '<div class="scount">' + candidate.count + '票</div>' +
-      '</div>'
-    ).join('');
-}
-
-function render() {
-  const votes = loadVotes();
-  document.getElementById('totalVotes').textContent = 'この端末：' + getTotal(votes) + '票';
-  document.getElementById('grid').innerHTML = CANDIDATES.map(candidate => {
-    const count = Number(votes[candidate.id] || 0);
-    return (
-      '<button class="card" type="button" data-id="' + esc(candidate.id) + '" onclick="selectCandidateFromButton(this)">' +
-        '<div class="card-top">' +
-          '<div class="num">No.' + candidate.number + '</div>' +
-          '<div class="name">' + esc(candidate.name) + '</div>' +
-        '</div>' +
-        '<div class="vote-count">' +
-          '<span class="label">この端末</span>' +
-          '<span><span class="count">' + count + '</span><span class="unit">票</span></span>' +
-        '</div>' +
-      '</button>'
-    );
-  }).join('');
-  renderSummary(votes);
-  document.getElementById('summary').classList.toggle('show', summaryVisible);
-}
-
-function selectCandidateFromButton(button) {
-  const candidateId = button && button.dataset ? button.dataset.id : '';
-  const candidate = CANDIDATES.find(c => c.id === candidateId);
-  if (!candidate) {
-    selectedCandidate = null;
-    setMessage('候補者データを読み込めませんでした。画面を再読み込みしてください。');
-    return;
+  function esc(text){
+    return String(text).replace(/[&<>"']/g,function(ch){
+      return {
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+      }[ch];
+    });
   }
-  selectedCandidate = candidate;
-  setMessage('');
-  openConfirmModal(candidate);
-}
 
-function openConfirmModal(candidate) {
-  document.getElementById('modalNum').textContent = 'No.' + candidate.number;
-  document.getElementById('modalName').textContent = candidate.name;
-  document.getElementById('voteSubmitButton').disabled = false;
-  document.getElementById('modal').classList.add('show');
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('show');
-  document.getElementById('voteSubmitButton').disabled = true;
-  selectedCandidate = null;
-}
-
-function submitVote() {
-  const button = document.getElementById('voteSubmitButton');
-  const candidate = selectedCandidate;
-  if (!candidate || !CANDIDATES.some(c => c.id === candidate.id)) {
-    setMessage('候補者が選択されていません。');
-    closeModal();
-    return;
+  function emptyCounts(){
+    const counts = {};
+    CANDIDATES.forEach(function(c){
+      counts[c.id] = 0;
+    });
+    return counts;
   }
-  button.disabled = true;
-  addVote(candidate.id);
-  document.getElementById('modal').classList.remove('show');
-  document.getElementById('thanksName').textContent = candidate.name + 'に投票しました。';
-  selectedCandidate = null;
+
+  function loadCounts(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      const counts = emptyCounts();
+      CANDIDATES.forEach(function(c){
+        const value = Number(parsed[c.id]);
+        counts[c.id] = Number.isFinite(value) && value > 0 ? Math.floor(value) : 0;
+      });
+      return counts;
+    }catch(e){
+      return emptyCounts();
+    }
+  }
+
+  function saveCounts(counts){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(counts));
+  }
+
+  function total(counts){
+    return Object.values(counts).reduce(function(sum,n){
+      return sum + Number(n || 0);
+    },0);
+  }
+
+  function showNotice(text){
+    $("notice").textContent = text || "";
+    if(text){
+      setTimeout(function(){
+        if($("notice").textContent === text) $("notice").textContent = "";
+      },2600);
+    }
+  }
+
+  function render(){
+    const counts = loadCounts();
+
+    $("totalVotes").textContent = "この端末：" + total(counts) + "票";
+    $("footerText").textContent = "データはこのiPad内にのみ保存されます / 最終更新 " + new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"});
+
+    $("candidateGrid").innerHTML = CANDIDATES.map(function(candidate){
+      const count = counts[candidate.id] || 0;
+      return '' +
+        '<button class="card" type="button" data-id="' + esc(candidate.id) + '">' +
+          '<div class="cardHead">' +
+            '<div class="num">No.' + esc(candidate.number) + '</div>' +
+            '<div class="name">' + esc(candidate.name) + '</div>' +
+          '</div>' +
+          '<div class="voteCount">' +
+            '<span class="label">この端末</span>' +
+            '<span class="count">' + count + '票</span>' +
+          '</div>' +
+        '</button>';
+    }).join("");
+
+    Array.prototype.forEach.call(document.querySelectorAll(".card"),function(button){
+      button.addEventListener("click",function(){
+        openModal(button.getAttribute("data-id"));
+      });
+    });
+
+    renderResults();
+  }
+
+  function renderResults(){
+    const counts = loadCounts();
+    const rows = CANDIDATES.slice().sort(function(a,b){
+      const diff = (counts[b.id] || 0) - (counts[a.id] || 0);
+      if(diff !== 0) return diff;
+      return a.number - b.number;
+    });
+
+    $("resultList").innerHTML = rows.map(function(c,index){
+      return '' +
+        '<li>' +
+          '<span class="rank">' + (index + 1) + '位</span>' +
+          '<span class="resultName">No.' + esc(c.number) + ' ' + esc(c.name) + '</span>' +
+          '<span class="resultVotes">' + (counts[c.id] || 0) + '票</span>' +
+        '</li>';
+    }).join("");
+  }
+
+  function openModal(candidateId){
+    const candidate = CANDIDATES.find(function(c){ return c.id === candidateId; });
+    if(!candidate){
+      showNotice("候補者データを読み込めませんでした。");
+      return;
+    }
+
+    selectedCandidateId = candidate.id;
+    $("modalNumber").textContent = "No." + candidate.number;
+    $("modalName").textContent = candidate.name;
+    $("confirmModal").classList.add("show");
+  }
+
+  window.closeModal = function(){
+    selectedCandidateId = null;
+    $("confirmModal").classList.remove("show");
+  };
+
+  window.submitVote = function(){
+    const candidate = CANDIDATES.find(function(c){ return c.id === selectedCandidateId; });
+    if(!candidate){
+      window.closeModal();
+      showNotice("候補者が選択されていません。");
+      return;
+    }
+
+    const counts = loadCounts();
+    counts[candidate.id] = (counts[candidate.id] || 0) + 1;
+    saveCounts(counts);
+
+    $("confirmModal").classList.remove("show");
+    $("thanksText").textContent = candidate.name + "に投票しました。";
+    selectedCandidateId = null;
+
+    render();
+    $("thanksModal").classList.add("show");
+  };
+
+  window.closeThanks = function(){
+    $("thanksModal").classList.remove("show");
+  };
+
+  window.toggleResults = function(show){
+    $("resultPanel").classList.toggle("show", !!show);
+    if(show) renderResults();
+    if(show) $("resultPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
+  };
+
+  window.resetVotes = function(){
+    const ok = confirm("このiPad内の投票データをすべて0票に戻します。よろしいですか？");
+    if(!ok) return;
+    saveCounts(emptyCounts());
+    render();
+    showNotice("この端末の票をリセットしました。");
+  };
+
+  document.addEventListener("keydown",function(event){
+    if(event.key === "Escape"){
+      window.closeModal();
+      window.closeThanks();
+    }
+  });
+
   render();
-  document.getElementById('thanks').classList.add('show');
-  button.disabled = false;
-}
-
-function readyNext() {
-  selectedCandidate = null;
-  document.getElementById('thanks').classList.remove('show');
-  setMessage('');
-}
-
-function toggleSummary() {
-  summaryVisible = !summaryVisible;
-  render();
-}
-
-function resetVotes() {
-  const ok = confirm('このiPad内の投票データをすべてリセットします。よろしいですか？');
-  if (!ok) return;
-  localStorage.removeItem(STORAGE_KEY);
-  selectedCandidate = null;
-  setMessage('この端末の投票データをリセットしました。');
-  render();
-}
-
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') closeModal();
-});
-
-render();
+})();
 </script>
 </body>
 </html>
